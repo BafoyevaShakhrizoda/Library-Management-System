@@ -75,3 +75,51 @@ print(f'{len(yangi_xodimlar)} ta xodim qo\'shildi!')
 
 
 
+#  U P D A T E
+
+# maosh ni id bo'yicha qidirib yangilagan 
+def maosh_yangilash(conn, xodim_id, yangi_maosh):
+    with conn.cursor() as cur:
+        cur.execute(
+            'UPDATE xodimlar SET maosh = %s WHERE id = %s',
+            (yangi_maosh, xodim_id)
+        )
+        tasirlangan = cur.rowcount  # nechta qator o'zgardi
+    conn.commit()
+    print(f'{tasirlangan} ta qator yangilandi')
+
+maosh_yangilash(conn, 3, 9500000)
+
+
+
+# rowcount qanday ishlaydi 
+cur.execute(
+    'UPDATE xodimlar SET maosh = maosh * 1.10 WHERE bolim_id = %s',
+    (1,)  # IT bo'limiga 10% ustama
+)
+
+print(f'Ozgaritirilgan qatorlar: {cur.rowcount}')
+# rowcount = 0 bo'lsa — hech narsa o'zgarmadi
+# rowcount = 3 bo'lsa — 3 ta qator yangilandi
+
+conn.commit()
+
+
+# returning bilan yangilangan qiymatlarni olish 
+
+with conn.cursor() as cur:
+    cur.execute(
+        '''
+        UPDATE xodimlar
+        SET maosh = maosh + %s
+        WHERE id = %s
+        RETURNING id, ism, maosh
+        ''',
+        (500000, 2)
+    )
+    yangilangan = cur.fetchone()
+    print(f'Yangi maosh: {yangilangan[2]:,}')
+conn.commit()
+
+
+

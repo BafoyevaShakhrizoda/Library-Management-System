@@ -123,3 +123,60 @@ conn.commit()
 
 
 
+# D E L E T E
+
+# id bo'yicha o'chirish 
+def xodim_ochir(conn, xodim_id):
+    with conn.cursor() as cur:
+        cur.execute(
+            'DELETE FROM xodimlar WHERE id = %s',
+            (xodim_id,)  
+        )
+        if cur.rowcount == 0:
+            print(f'ID: {xodim_id} topilmadi!')
+        else:
+            print(f'ID: {xodim_id} o\'chirildi')
+    conn.commit()
+
+xodim_ochir(conn, 5)
+
+# ochirishdan oldin tasdiqlash
+
+def tasdiqlangan_ochirish(conn, xodim_id):
+    # Avval bor-yo'qligini tekshir
+    with conn.cursor() as cur:
+        cur.execute('SELECT ism FROM xodimlar WHERE id = %s', (xodim_id,))
+        xodim = cur.fetchone()
+    if not xodim:
+        print('Xodim topilmadi!')
+        return
+    tasdiq = input(f'{xodim[0]}ni o\'chirasizmi? (ha/yoq): ')
+    if tasdiq.lower() == 'ha':
+        with conn.cursor() as cur:
+            cur.execute('DELETE FROM xodimlar WHERE id = %s', (xodim_id,))
+        conn.commit()
+        print('O\'chirildi!')
+        
+        
+
+# shart bo'yicha o'chirish 
+
+
+def tasdiqlangan_ochirish(conn, xodim_id):
+    # Avval bor-yo'qligini tekshir
+    with conn.cursor() as cur:
+        cur.execute('SELECT ism FROM xodimlar WHERE id = %s', (xodim_id,))
+        xodim = cur.fetchone()
+    if not xodim:
+        print('Xodim topilmadi!')
+        return
+    tasdiq = input(f'{xodim[0]}ni o\'chirasizmi? (ha/yoq): ')
+    if tasdiq.lower() == 'ha':
+        with conn.cursor() as cur:
+            cur.execute('DELETE FROM xodimlar WHERE id = %s', (xodim_id,))
+        conn.commit()
+        print('O\'chirildi!')
+
+
+
+
